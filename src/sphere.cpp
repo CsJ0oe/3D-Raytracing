@@ -20,9 +20,18 @@ bool Sphere::intersect(const Ray& ray, Hit& hit) const
 {
     /// TODO: compute ray-sphere intersection
 
-    throw RTException("Sphere::intersect not implemented yet.");
-
-    return false;
+    Vector3f oc = ray.origin - this->m_center;
+    float a = ray.direction.dot(ray.direction);
+    float b = 2.0 * oc.dot(ray.direction);
+    float c = oc.dot(oc) - (this->m_radius * this->m_radius);
+    float discriminant = b*b - 4*a*c;
+    if(discriminant < 0) return false;
+    float t = (-b - sqrt(discriminant)) / (2.0*a);
+    if (t < hit.t()) {
+        hit.setT(t);
+        hit.setShape(this);
+    }
+    return true;
 }
 
 REGISTER_CLASS(Sphere, "sphere")
