@@ -4,6 +4,10 @@
 #include "common.h"
 #include "proplist.h"
 
+#if defined(_MSC_VER)
+typedef unsigned int uint;
+#endif
+
 /**
  * \brief Base class of all objects
  *

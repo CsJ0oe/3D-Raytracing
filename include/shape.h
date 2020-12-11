@@ -18,7 +18,7 @@ public:
     /** Search the nearest intersection between the ray and the shape.
       * It must be implemented in the derived class. */
     virtual bool intersect(const Ray& ray, Hit& hit) const {
-        throw RTException("Shape::intersect must be implemented in the derived class");}
+        throw RTException("Shape::intersect must be implemented in the derived class"); }
 
     virtual const Material* material() const { return m_material; }
     virtual void setMaterial(const Material* mat) { m_material = mat; }

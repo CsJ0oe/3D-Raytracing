@@ -51,6 +51,7 @@ set(SRCS
     include/object.h
     include/sphere.h
     include/scene.h
+    include/mesh.h
     include/shape.h
     include/material.h
     include/light.h
@@ -66,6 +67,8 @@ set(SRCS
     src/block.cpp
     src/viewer.cpp
     src/bitmap.cpp
+    src/mesh.cpp
+    src/bvh.cpp
     src/camera.cpp
     src/main.cpp
     src/object.cpp
@@ -81,6 +84,10 @@ set(SRCS
     src/parser.cpp
     src/proplist.cpp
     src/flat.cpp
+    src/direct.cpp
+    src/whitted.cpp
+    src/texcoords.cpp
+
 )
 
 add_executable(mds3d_raytracer ${SRCS})

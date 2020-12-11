@@ -144,7 +144,7 @@ void Bitmap::loadPNG(const std::string &filename) {
     resize(height, width);
 
     if(error) {
-        fprintf(stderr, "Load PNG err: %s: %s\n", error, lodepng_error_text(error));
+        fprintf(stderr, "Load PNG err: %i: %s\n", error, lodepng_error_text(error));
         return;
     }
 
@@ -201,8 +201,8 @@ void Bitmap::saveEXR(const std::string &filename) {
     image_ptr[2] = &(images[0].at(0)); // R
 
     image.images = reinterpret_cast<unsigned char**>(image_ptr);
-    image.width = cols();
-    image.height = rows();
+    image.width = (int) cols();
+    image.height = (int) rows();
 
     header.num_channels = 3;
     header.channels = (EXRChannelInfo *) malloc(sizeof(EXRChannelInfo) * header.num_channels);
@@ -236,8 +236,8 @@ void Bitmap::savePNG(const std::string &filename, bool flip) {
 
     std::vector<unsigned char> image;
     image.resize(cols() * rows() * 4);
-    for (unsigned i = 0; i < cols(); ++i)
-        for (unsigned j = 0; j < rows(); ++j) {
+    for (unsigned i = 0; i < (unsigned) cols(); ++i)
+        for (unsigned j = 0; j < (unsigned) rows(); ++j) {
             unsigned y = flip ? rows() - 1 - j : j;
             image[4 * (i + j * cols()) + 0] = static_cast<unsigned char>((*this)(y,i).r() * 255);
             image[4 * (i + j * cols()) + 1] = static_cast<unsigned char>((*this)(y,i).g() * 255);

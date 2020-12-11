@@ -16,6 +16,8 @@ Plane::~Plane()
 
 bool Plane::intersect(const Ray& ray, Hit& hit) const
 {
+	// TODO
+	
     // assuming vectors are all normalized
     float denom = ray.direction.dot(this->m_normal);
     if (abs(denom) < 1e-6) return false;
