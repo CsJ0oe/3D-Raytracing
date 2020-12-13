@@ -30,6 +30,8 @@ bool Sphere::intersect(const Ray& ray, Hit& hit) const
     if (t < hit.t()) {
         hit.setT(t);
         hit.setShape(this);
+        Point3f at = ray.at(t);
+        hit.setNormal((at - m_center).normalized());
     }
     return true;
 }
