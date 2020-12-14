@@ -27,8 +27,7 @@ void render(Scene* scene, ImageBlock* result, std::string outputName, bool* done
     ///  4. write this color in the result image
     for (uint i=0; i < camW; i++) {
         for (uint j=0; j < camH; j++) {
-            Vector3f d = camF + (2.0*i/camW - 1)*camX + (2.0*j/camH - 1)*camY;
-            d.normalize();
+            Vector3f d = ( camF + (2.0*i/camW - 1)*camX + (2.0*j/camH - 1)*camY ).normalized() ;
             Color3f color = integrator->Li(scene, Ray(camera->position(), d));
             result->put(Vector2f(i,j), color);
         }
