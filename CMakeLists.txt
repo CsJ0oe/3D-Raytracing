@@ -84,6 +84,7 @@ set(SRCS
     src/parser.cpp
     src/proplist.cpp
     src/flat.cpp
+    src/normals.cpp
     src/direct.cpp
     src/whitted.cpp
     src/texcoords.cpp
