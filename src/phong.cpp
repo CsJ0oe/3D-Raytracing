@@ -19,7 +19,7 @@ Phong::Phong(const PropertyList &propList)
 Color3f Phong::brdf(const Vector3f& viewDir, const Vector3f& lightDir, const Normal3f& normal, const Vector2f& uv) const
 {
     /// TODO: implement Phong brdf
-    Vector3f r = 2 * (lightDir.dot(normal)) * normal - lightDir;
+    Vector3f r = lightDir.dot(normal) * normal * 2.0 - lightDir;
     return diffuseColor(uv) + m_specularColor * powf( fmax(viewDir.dot(r), 0.0f), m_exponent);
 }
 

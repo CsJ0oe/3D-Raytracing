@@ -12,13 +12,13 @@ public:
     Vector3f direction(const Point3f& x, float* dist = 0) const
     {
         if(dist) // TODO TOFIX
-            *dist = std::numeric_limits<float>::max();
+            *dist = (m_position - x).norm();
         return (m_position - x).normalized();
     }
 
     Color3f intensity(const Point3f& x) const
     {
-        return (m_intensity / powf(direction(x).norm(), 2)); // + 0.0001 ???
+        return (m_intensity / (powf((m_position - x).norm(), 2) + 0.0001) );
     }
 
     std::string toString() const {
