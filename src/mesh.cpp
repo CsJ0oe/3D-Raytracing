@@ -14,7 +14,7 @@ Mesh::Mesh(const PropertyList &propList)
 {
     std::string filename = propList.getString("filename");
     loadFromFile(filename);
-    // buildBVH();
+    //buildBVH();
 }
 
 void Mesh::loadFromFile(const std::string& filename)
@@ -200,7 +200,38 @@ long int Mesh::ms_itersection_count = 0;
 bool Mesh::intersectFace(const Ray& ray, Hit& hit, int faceId) const
 {
     ms_itersection_count++;
-    return true;
+
+    Vector3f v0 = vertexOfFace(faceId, 0).position;
+    Vector3f v1 = vertexOfFace(faceId, 1).position;
+    Vector3f v2 = vertexOfFace(faceId, 2).position;
+
+    Vector3f v0v1 = v1 - v0;
+    Vector3f v0v2 = v2 - v0;
+    Vector3f pvec = ray.direction.cross(v0v2);
+    float det = v0v1.dot(pvec);
+
+    if (det < 0.000001f) return false;
+
+    float invDet = 1 / det;
+
+    Vector3f tvec = ray.origin - v0;
+    float u = tvec.dot(pvec) * invDet;
+    if (u < 0 || u > 1) return false;
+
+    Vector3f qvec = tvec.cross(v0v1);
+    float v = ray.direction.dot(qvec) * invDet;
+    if (v < 0 || u + v > 1) return false;
+
+    float t = v0v2.dot(qvec) * invDet;
+
+    if (t >= 0 && t < hit.t()) {
+        hit.setT(t);
+        hit.setShape(this);
+        hit.setNormal(v0v1.cross(v0v2).normalized());
+        return true;
+    }
+
+    return false;
 }
 
 bool Mesh::intersect(const Ray& ray, Hit& hit) const
@@ -210,11 +241,15 @@ bool Mesh::intersect(const Ray& ray, Hit& hit) const
     if( (!::intersect(ray, m_AABB, tMin, tMax, normal)) || tMin>hit.t())
         return false;
 
-    hit.setT(tMin);
-    hit.setNormal(normal);
-    hit.setShape(this);
+    //hit.setT(tMin);
+    //hit.setNormal(normal);
+    //hit.setShape(this);
 
-    return true;
+    bool result = false;
+    for (int f=0; f<nbFaces(); f++) {
+        result |= Mesh::intersectFace(ray, hit, f);
+    }
+    return result;
 }
 
 std::string Mesh::toString() const {
