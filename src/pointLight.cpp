@@ -11,8 +11,7 @@ public:
 
     Vector3f direction(const Point3f& x, float* dist = 0) const
     {
-        if(dist) // TODO TOFIX
-            *dist = (m_position - x).norm();
+        if(dist) *dist = (m_position - x).norm();
         return (m_position - x).normalized();
     }
 

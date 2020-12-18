@@ -18,8 +18,7 @@ Sphere::~Sphere()
 
 bool Sphere::intersect(const Ray& ray, Hit& hit) const
 {
-    /// TODO: compute ray-sphere intersection
-
+    // compute ray-sphere intersection
     Vector3f oc = ray.origin - this->m_center;
     float a = ray.direction.dot(ray.direction);
     float b = oc.dot(ray.direction) * 2.0;

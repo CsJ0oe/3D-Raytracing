@@ -27,6 +27,7 @@ Diffuse::Diffuse(const PropertyList &propList)
 
 Color3f Diffuse::diffuseColor(const Vector2f& uv) const
 {
+    // TODO : texture
     if(texture() == nullptr)
         return m_diffuseColor;
 

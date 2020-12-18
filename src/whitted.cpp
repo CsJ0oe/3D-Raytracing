@@ -17,8 +17,6 @@ public:
         if (ray.recursionLevel > m_maxRecursion) return radiance;
 
         /* Find the surface that is visible in the requested direction */
-        //TODO : FIX ME ENSEIRB STUDENTS
-
         Hit hit;
         scene->intersect(ray, hit);
         Point3f x = ray.at(hit.t());
@@ -44,8 +42,7 @@ public:
             Color3f reflexionColor = Li(scene, reflexionRay);
             radiance += reflexionColor * hit.shape()->material()->reflectivity();
 
-            // refraction
-            //TODO : FIX ME ENSEIRB STUDENTS
+            // TODO : refraction
 
         }else if(ray.recursionLevel == 0)
             return scene->backgroundColor();

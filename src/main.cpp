@@ -20,15 +20,15 @@ void render(Scene* scene, ImageBlock* result, std::string outputName, bool* done
     uint camW = camera->vpWidth();
     uint camH = camera->vpHeight();
 
-    /// TODO:
     ///  1. iterate over the image pixels
-    ///  2. generate a primary ray
-    ///  3. call the integartor to compute the color along this ray
-    ///  4. write this color in the result image
     for (uint i=0; i < camW; i++) {
         for (uint j=0; j < camH; j++) {
-            Vector3f d = ( camF + (2.0*i/camW - 1)*camX + (2.0*j/camH - 1)*camY ).normalized() ;
-            Color3f color = integrator->Li(scene, Ray(camera->position(), d));
+            ///  2. generate a primary ray
+            Vector3f d = ( camF + (2.0*i/camW - 1)*camX + (2.0*j/camH - 1)*camY ).normalized();
+            Ray ray (camera->position(), d);
+            ///  3. call the integartor to compute the color along this ray
+            Color3f color = integrator->Li(scene, ray);
+            ///  4. write this color in the result image
             result->put(Vector2f(i,j), color);
         }
     }
