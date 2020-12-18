@@ -31,7 +31,7 @@ public:
                 Hit bounceHit = Hit();
                 scene->intersect(bounceRay, bounceHit);
                 if (bounceHit.foundIntersection() && bounceHit.t() <= distToLightSource) continue;
-                Color3f p = hit.shape()->material()->brdf(-ray.direction, l->direction(x), hit.normal(), Vector2f(0.0f) /* TODO : hit.textCoord() */);
+                Color3f p = hit.shape()->material()->brdf(-ray.direction, l->direction(x), hit.normal(), hit.textCoord());
                 radiance += p * fmax(l->direction(x).dot(hit.normal()), .0f) * l->intensity(x);
 
             }

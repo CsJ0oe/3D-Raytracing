@@ -25,7 +25,7 @@ public:
 class Hit
 {
 public:
-    Hit() : m_shape(nullptr), m_t(std::numeric_limits<float>::max()) {}
+    Hit() : m_normal(), m_textCoord(), m_shape(nullptr), m_t(std::numeric_limits<float>::max()) {}
 
     bool foundIntersection() const { return m_t < std::numeric_limits<float>::max(); }
 
@@ -38,8 +38,12 @@ public:
     void setNormal(const Normal3f& n) { m_normal = n; }
     const Normal3f& normal() const { return m_normal; }
 
+    void setTextCoord(const Vector2f& uv) { m_textCoord = uv; }
+    const Vector2f& textCoord() const { return m_textCoord; }
+
 private:
     Normal3f m_normal;
+    Vector2f m_textCoord;
     const Shape* m_shape;
     float m_t;
 };

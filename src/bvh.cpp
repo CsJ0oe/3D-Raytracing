@@ -45,7 +45,7 @@ bool BVH::intersect(const Ray& ray, Hit& hit) const
     Normal3f n;
     ::intersect(ray, m_nodes[0].box, tMin, tMax, n);
 
-    // TOFIX vérifier si on a bien une intersection (en fonction de tMin, tMax, et hit.t()), et si oui appeler intersecNode...
+    // vérifier si on a bien une intersection (en fonction de tMin, tMax, et hit.t()), et si oui appeler intersecNode...
     if( ::intersect(ray, m_nodes[0].box, tMin, tMax, n) && tMin<=hit.t())
         return intersectNode(0, ray, hit);
 
@@ -60,16 +60,16 @@ bool BVH::intersectNode(int nodeId, const Ray& ray, Hit& hit) const
     // deux cas:
     if (node.is_leaf) {
         // soit mNodes[nodeId] est une feuille (il faut alors intersecter les triangles du noeud),
-        for (int f=node.first_face_id; f<(node.first_face_id+node.nb_faces); f++) {
+        for (int f=node.first_face_id; f<(node.first_face_id+node.nb_faces); ++f) {
             result |= m_pMesh->intersectFace(ray, hit, f);
         }
     } else {
-        // TOFIX soit c'est un noeud interne (il faut visiter les fils (ou pas))
-        float tMin, tMax;
-        Normal3f n;
-        if (::intersect(ray, m_nodes[node.first_child_id].box, tMin, tMax, n) && tMin<=hit.t())
+        // soit c'est un noeud interne (il faut visiter les fils (ou pas))
+        float tMin1, tMax1,tMin2, tMax2;
+        Normal3f n1, n2;
+        if( ::intersect(ray, m_nodes[node.first_child_id].box, tMin1, tMax1, n1)  )
             result |= intersectNode(node.first_child_id, ray, hit);
-        if (::intersect(ray, m_nodes[node.first_child_id+1].box, tMin, tMax, n) && tMin<=hit.t())
+        if( ::intersect(ray, m_nodes[node.first_child_id+1].box, tMin2, tMax2, n2) )
             result |= intersectNode(node.first_child_id+1, ray, hit);
     }
 

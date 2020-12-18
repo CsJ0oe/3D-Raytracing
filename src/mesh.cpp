@@ -204,6 +204,9 @@ bool Mesh::intersectFace(const Ray& ray, Hit& hit, int faceId) const
     Vector3f v0 = vertexOfFace(faceId, 0).position;
     Vector3f v1 = vertexOfFace(faceId, 1).position;
     Vector3f v2 = vertexOfFace(faceId, 2).position;
+    Vector3f n0 = vertexOfFace(faceId, 0).normal;
+    Vector3f n1 = vertexOfFace(faceId, 1).normal;
+    Vector3f n2 = vertexOfFace(faceId, 2).normal;
 
     Vector3f v0v1 = v1 - v0;
     Vector3f v0v2 = v2 - v0;
@@ -228,6 +231,9 @@ bool Mesh::intersectFace(const Ray& ray, Hit& hit, int faceId) const
         hit.setT(t);
         hit.setShape(this);
         hit.setNormal(v0v1.cross(v0v2).normalized());
+        hit.setTextCoord(Vector2f(.0f, .0f));
+        if (!n0.isZero() && !n1.isZero() && !n2.isZero())
+            hit.setNormal( ((1-u-v)*n0 + u*n1 + v*n2).normalized() );
         return true;
     }
 

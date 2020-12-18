@@ -27,10 +27,17 @@ Diffuse::Diffuse(const PropertyList &propList)
 
 Color3f Diffuse::diffuseColor(const Vector2f& uv) const
 {
-    // TODO : texture
+    // texture
     if(texture() == nullptr)
         return m_diffuseColor;
 
+    int tu = fmod(uv.x()/textureScaleU(), 1.0f) * texture()->cols();
+    int tv = fmod(uv.y()/textureScaleV(), 1.0f) * texture()->rows();
+
+    if (textureMode() == REPLACE)
+        return (*texture())(tv,tu);
+
+    return (*texture())(tv, tu) * m_diffuseColor;
 }
 
 REGISTER_CLASS(Diffuse, "diffuse")

@@ -8,13 +8,15 @@ public:
     }
 
     Color3f Li(const Scene *scene, const Ray &ray) const {
-        /* Find the surface that is visible in the requested direction */
-
         /* Return the component-wise absolute
            value of the shading Texcoords as a color */
-        
-        //TODO:  FIX ME ENSEIRB STUDENT
-        return Color3f(0.0f,0.0f,0.0f);
+        Hit hit;
+        scene->intersect(ray, hit);
+        if (hit.foundIntersection()) {
+            return Color3f(hit.textCoord().x(), hit.textCoord().y(), 0.0f);
+        } else {
+            return scene->backgroundColor();
+        }
     }
 
     std::string toString() const {
