@@ -14,7 +14,7 @@ Mesh::Mesh(const PropertyList &propList)
 {
     std::string filename = propList.getString("filename");
     loadFromFile(filename);
-    //buildBVH();
+    buildBVH();
 }
 
 void Mesh::loadFromFile(const std::string& filename)
@@ -192,7 +192,7 @@ void Mesh::buildBVH()
     if(m_BVH)
         delete m_BVH;
     m_BVH = new BVH;
-    m_BVH->build(this, 10, 100);
+    m_BVH->build(this, 100, 10);
 }
 
 long int Mesh::ms_itersection_count = 0;
@@ -241,9 +241,8 @@ bool Mesh::intersect(const Ray& ray, Hit& hit) const
     if( (!::intersect(ray, m_AABB, tMin, tMax, normal)) || tMin>hit.t())
         return false;
 
-    //hit.setT(tMin);
-    //hit.setNormal(normal);
-    //hit.setShape(this);
+    if (m_BVH != nullptr )
+        return m_BVH->intersect(ray, hit);
 
     bool result = false;
     for (int f=0; f<nbFaces(); f++) {
