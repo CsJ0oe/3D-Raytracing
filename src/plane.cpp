@@ -29,8 +29,8 @@ bool Plane::intersect(const Ray& ray, Hit& hit) const
         Vector3f b = m_normal.cross(Vector3f(0, 1, 0));
         Vector3f c = m_normal.cross(Vector3f(0, 0, 1));
         Vector3f u = a;
-        u = u.dot(u) < b.dot(b) ? b : u;
-        u = u.dot(u) < c.dot(c) ? c : u;
+        u = u.dot(u) <= b.dot(b) ? b : u;
+        u = u.dot(u) <= c.dot(c) ? c : u;
         Vector3f v = m_normal.cross(u);
         float uu = fmod(1.0f + fmod(at.dot(u), 1.0f), 1.0f);
         float vv = fmod(1.0f + fmod(at.dot(v), 1.0f), 1.0f);
