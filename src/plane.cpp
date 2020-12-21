@@ -31,13 +31,10 @@ bool Plane::intersect(const Ray& ray, Hit& hit) const
         Vector3f u = a;
         u = u.dot(u) < b.dot(b) ? b : u;
         u = u.dot(u) < c.dot(c) ? c : u;
-        u = u.normalized();
         Vector3f v = m_normal.cross(u);
-        v = v.normalized();
-        float uu = .5f + sin(u.dot(at)) / 2;
-        float vv = .5f + sin(v.dot(at)) / 2;
+        float uu = fmod(1.0f + fmod(at.dot(u), 1.0f), 1.0f);
+        float vv = fmod(1.0f + fmod(at.dot(v), 1.0f), 1.0f);
         hit.setTextCoord(Vector2f(uu, vv));
-        cout << uu << " " << vv << endl;
         return true;
     }
     return false;

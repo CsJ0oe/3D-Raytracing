@@ -1,4 +1,4 @@
-project(mds3d_td1)
+project(mds3d_raytracing)
 
 cmake_minimum_required(VERSION 2.8.3)
 

@@ -192,7 +192,7 @@ void Mesh::buildBVH()
     if(m_BVH)
         delete m_BVH;
     m_BVH = new BVH;
-    m_BVH->build(this, 100, 10);
+    m_BVH->build(this, 100, 20);
 }
 
 long int Mesh::ms_itersection_count = 0;
@@ -247,7 +247,7 @@ bool Mesh::intersect(const Ray& ray, Hit& hit) const
     if( (!::intersect(ray, m_AABB, tMin, tMax, normal)) || tMin>hit.t())
         return false;
 
-    if (m_BVH != nullptr )
+    if (m_BVH != nullptr)
         return m_BVH->intersect(ray, hit);
 
     bool result = false;

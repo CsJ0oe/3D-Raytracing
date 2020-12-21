@@ -20,9 +20,9 @@ void BVH::build(const Mesh* pMesh, int targetCellSize, int maxDepth)
             m_faces[i] = i;
         }
     }else{
-        // TOFIX reserve space for other nodes to avoid multiple memory reallocations
+        // reserve space for other nodes to avoid multiple memory reallocations
         //m_nodes.reserve( std::min<int>(2<<maxDepth, 2*std::log(m_pMesh->nbFaces()/targetCellSize)) );
-        m_nodes.reserve(2<<maxDepth);
+        m_nodes.reserve( 2<<maxDepth );
 
         // compute centroids and initialize the face list
         m_centroids.resize(m_pMesh->nbFaces());
@@ -40,13 +40,11 @@ void BVH::build(const Mesh* pMesh, int targetCellSize, int maxDepth)
 
 bool BVH::intersect(const Ray& ray, Hit& hit) const
 {
-    // compute the intersection with the root node
     float tMin, tMax;
     Normal3f n;
-    ::intersect(ray, m_nodes[0].box, tMin, tMax, n);
-
+    // compute the intersection with the root node
     // vérifier si on a bien une intersection (en fonction de tMin, tMax, et hit.t()), et si oui appeler intersecNode...
-    if( ::intersect(ray, m_nodes[0].box, tMin, tMax, n) && tMin<=hit.t())
+    if( ::intersect(ray, m_nodes[0].box, tMin, tMax, n) && tMin<=hit.t() && tMin <= tMax)
         return intersectNode(0, ray, hit);
 
     return false;
@@ -60,14 +58,14 @@ bool BVH::intersectNode(int nodeId, const Ray& ray, Hit& hit) const
     // deux cas:
     if (node.is_leaf) {
         // soit mNodes[nodeId] est une feuille (il faut alors intersecter les triangles du noeud),
-        for (int f=node.first_face_id; f<(node.first_face_id+node.nb_faces); ++f) {
-            result |= m_pMesh->intersectFace(ray, hit, f);
+        for (int i=0; i<node.nb_faces; ++i) {
+            result |= m_pMesh->intersectFace(ray, hit, m_faces[node.first_face_id+i]);
         }
     } else {
         // soit c'est un noeud interne (il faut visiter les fils (ou pas))
-        float tMin1, tMax1,tMin2, tMax2;
+        float tMin1, tMax1, tMin2, tMax2;
         Normal3f n1, n2;
-        if( ::intersect(ray, m_nodes[node.first_child_id].box, tMin1, tMax1, n1)  )
+        if( ::intersect(ray, m_nodes[node.first_child_id].box, tMin1, tMax1, n1) )
             result |= intersectNode(node.first_child_id, ray, hit);
         if( ::intersect(ray, m_nodes[node.first_child_id+1].box, tMin2, tMax2, n2) )
             result |= intersectNode(node.first_child_id+1, ray, hit);
@@ -110,15 +108,15 @@ void BVH::buildNode(int nodeId, int start, int end, int level, int targetCellSiz
     }
 
     // étape 2 : déterminer si il s'agit d'une feuille (appliquer les critères d'arrêts)
-    if(node.nb_faces <= targetCellSize || level >= (maxDepth-1)) {
+    if(node.nb_faces <= targetCellSize || level >= maxDepth) {
         // Si c'est une feuille, finaliser le noeud et quitter la fonction
-        node.first_face_id = start;
         node.is_leaf = true;
-        cout << "leaf - " << node.nb_faces << " / " << level << endl;
+        node.first_face_id = start;
         return;
     }
 
     // Si c'est un noeud interne :
+    node.is_leaf = false;
 
     // étape 3 : calculer l'index de la dimension (x=0, y=1, ou z=2) et la valeur du plan de coupe
     // (on découpe au milieu de la boite selon la plus grande dimension)
@@ -136,6 +134,6 @@ void BVH::buildNode(int nodeId, int start, int end, int level, int targetCellSiz
     node.first_child_id = m_nodes.size();
     m_nodes.push_back(Node());
     m_nodes.push_back(Node());
-    buildNode(node.first_child_id, start, mid, level+1, targetCellSize, maxDepth);
-    buildNode(node.first_child_id+1, mid, end, level+1, targetCellSize, maxDepth);
+    buildNode(m_nodes[nodeId].first_child_id, start, mid, level+1, targetCellSize, maxDepth);
+    buildNode(m_nodes[nodeId].first_child_id+1, mid, end, level+1, targetCellSize, maxDepth);
 }
